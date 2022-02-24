@@ -1,18 +1,20 @@
 package com.redis.clustered;
 
 import com.redis.clustered.config.RedisConfig;
-import org.json.simple.JSONObject;
+import com.redis.clustered.entity.cache.UserCache;
+import com.redis.clustered.repo.cache.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.concurrent.TimeUnit;
-
 @SpringBootApplication
 public class ClusteredApplication implements CommandLineRunner {
 	@Autowired
 	private RedisConfig redisConfig;
+
+	@Autowired
+	private UserRepository userRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ClusteredApplication.class, args);
@@ -20,11 +22,13 @@ public class ClusteredApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		JSONObject json = new JSONObject();
-		json.put("name", "Ardi");
-		json.put("age", 23);
+		UserCache userCache = new UserCache();
+		userCache.setName("Ardi");
+		userCache.setAddress("Bantul");
 
-		redisConfig.redisTemplate().opsForValue().set("ProgramStudent", json.toJSONString());
+		userRepository.save(userCache);
+
+//		redisConfig.redisTemplate().opsForValue().set("ProgramStudent", json.toJSONString());
 
 	}
 }
